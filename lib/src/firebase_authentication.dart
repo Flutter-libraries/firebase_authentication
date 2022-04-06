@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 import 'dart:math';
 
-
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_authentication/authentication_repository.dart';
+import 'package:firebase_authentication/firebase_authentication.dart';
 import 'package:firebase_authentication/src/cache.dart';
+import 'package:firebase_authentication/src/models/auth_user.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
