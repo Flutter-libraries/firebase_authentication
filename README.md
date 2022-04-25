@@ -1,39 +1,47 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Firebase authentication
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+This package is a wrapper for firebase authentication features.
+It's used as a module in differents apps to avoid must to update multiple apps when some version or feature changes in flutterFire
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Register / authetication by:
+- Phone
+- Email
+- Google
+- Facebook
+- Apple
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the reference in `pubspec.yaml`
+
+```
+firebase_authentication: ^0.0.2
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+Import the module
 
 ```dart
-const like = 'sample';
+import 'package:firebase_authentication/firebase_authentication.dart';
+```
+
+And use the `AuthenticationRepository`
+
+
+```dart
+await _authenticationRepository.logInWithEmailAndPassword(
+    email: state.email.value,
+    password: state.password.value,
+    );
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+- Test publish 
+
+```
+dart pub publish --dry-run
+```
