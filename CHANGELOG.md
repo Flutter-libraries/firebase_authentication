@@ -1,3 +1,11 @@
+## 0.0.4
+
+* Update packages versions
+
+## 0.0.3
+
+* Update packages versions
+
 ## 0.0.2
 
 * Update flutter_facebook_auth library
