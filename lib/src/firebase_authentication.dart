@@ -339,8 +339,9 @@ class AuthenticationRepository {
         final credential = await _firebaseAuth.signInWithPopup(
           googleProvider,
         );
-        if (credential.credential != null)
+        if (credential.credential != null) {
           await _firebaseAuth.signInWithCredential(credential.credential!);
+        }
       } else {
         final googleUser = await _googleSignIn.signIn();
         final googleAuth = await googleUser!.authentication;
@@ -350,7 +351,7 @@ class AuthenticationRepository {
         );
         await _firebaseAuth.signInWithCredential(credential);
       }
-    } on FirebaseAuthException catch (e, s) {
+    } on FirebaseAuthException catch (e) {
       throw LogInWithGoogleFailure.fromCode(e.code);
     } catch (_) {
       throw const LogInWithGoogleFailure();
@@ -502,16 +503,17 @@ class AuthenticationRepository {
   Future<void> logInWithPhoneWeb(String phoneNumber) async {
     final confirmationResult = await _firebaseAuth.signInWithPhoneNumber(
         phoneNumber,
-        RecaptchaVerifier(
-          auth: _firebaseAuthPlatform,
-          container: 'recaptcha',
-          size: RecaptchaVerifierSize.compact,
-          theme: RecaptchaVerifierTheme.dark,
-          onSuccess: () => log('reCAPTCHA Completed!'),
-          onError: (FirebaseAuthException error) =>
-              log(error.message ?? 'Unknown Error'),
-          onExpired: () => log('reCAPTCHA Expired!'),
-        ));
+        // RecaptchaVerifier(
+        //   auth: _firebaseAuthPlatform,
+        //   container: 'recaptcha',
+        //   size: RecaptchaVerifierSize.compact,
+        //   theme: RecaptchaVerifierTheme.dark,
+        //   onSuccess: () => log('reCAPTCHA Completed!'),
+        //   onError: (FirebaseAuthException error) =>
+        //       log(error.message ?? 'Unknown Error'),
+        //   onExpired: () => log('reCAPTCHA Expired!'),
+        // )
+        );
 
     _confirmationResult = confirmationResult;
   }
@@ -595,7 +597,7 @@ extension on User {
         email: email,
         phone: phoneNumber,
         name: finaldisplayName,
-        providers: providers,
+        // providers: providers,
         photo: photoURL);
   }
 }

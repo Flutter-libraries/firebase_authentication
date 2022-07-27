@@ -26,7 +26,6 @@ mixin _$AuthUser {
   String? get name => throw _privateConstructorUsedError;
   String? get photo => throw _privateConstructorUsedError;
   String? get providerId => throw _privateConstructorUsedError;
-  List<SocialProvider> get providers => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,8 +43,7 @@ abstract class $AuthUserCopyWith<$Res> {
       String? phone,
       String? name,
       String? photo,
-      String? providerId,
-      List<SocialProvider> providers});
+      String? providerId});
 }
 
 /// @nodoc
@@ -64,7 +62,6 @@ class _$AuthUserCopyWithImpl<$Res> implements $AuthUserCopyWith<$Res> {
     Object? name = freezed,
     Object? photo = freezed,
     Object? providerId = freezed,
-    Object? providers = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -91,10 +88,6 @@ class _$AuthUserCopyWithImpl<$Res> implements $AuthUserCopyWith<$Res> {
           ? _value.providerId
           : providerId // ignore: cast_nullable_to_non_nullable
               as String?,
-      providers: providers == freezed
-          ? _value.providers
-          : providers // ignore: cast_nullable_to_non_nullable
-              as List<SocialProvider>,
     ));
   }
 }
@@ -111,8 +104,7 @@ abstract class _$$_AuthUserCopyWith<$Res> implements $AuthUserCopyWith<$Res> {
       String? phone,
       String? name,
       String? photo,
-      String? providerId,
-      List<SocialProvider> providers});
+      String? providerId});
 }
 
 /// @nodoc
@@ -133,7 +125,6 @@ class __$$_AuthUserCopyWithImpl<$Res> extends _$AuthUserCopyWithImpl<$Res>
     Object? name = freezed,
     Object? photo = freezed,
     Object? providerId = freezed,
-    Object? providers = freezed,
   }) {
     return _then(_$_AuthUser(
       id: id == freezed
@@ -160,10 +151,6 @@ class __$$_AuthUserCopyWithImpl<$Res> extends _$AuthUserCopyWithImpl<$Res>
           ? _value.providerId
           : providerId // ignore: cast_nullable_to_non_nullable
               as String?,
-      providers: providers == freezed
-          ? _value._providers
-          : providers // ignore: cast_nullable_to_non_nullable
-              as List<SocialProvider>,
     ));
   }
 }
@@ -177,10 +164,8 @@ class _$_AuthUser extends _AuthUser {
       this.phone,
       this.name,
       this.photo,
-      this.providerId,
-      final List<SocialProvider> providers = const <SocialProvider>[]})
-      : _providers = providers,
-        super._();
+      this.providerId})
+      : super._();
 
   factory _$_AuthUser.fromJson(Map<String, dynamic> json) =>
       _$$_AuthUserFromJson(json);
@@ -198,17 +183,10 @@ class _$_AuthUser extends _AuthUser {
   final String? photo;
   @override
   final String? providerId;
-  final List<SocialProvider> _providers;
-  @override
-  @JsonKey()
-  List<SocialProvider> get providers {
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_providers);
-  }
 
   @override
   String toString() {
-    return 'AuthUser(id: $id, email: $email, phone: $phone, name: $name, photo: $photo, providerId: $providerId, providers: $providers)';
+    return 'AuthUser(id: $id, email: $email, phone: $phone, name: $name, photo: $photo, providerId: $providerId)';
   }
 
   @override
@@ -222,9 +200,7 @@ class _$_AuthUser extends _AuthUser {
             const DeepCollectionEquality().equals(other.name, name) &&
             const DeepCollectionEquality().equals(other.photo, photo) &&
             const DeepCollectionEquality()
-                .equals(other.providerId, providerId) &&
-            const DeepCollectionEquality()
-                .equals(other._providers, _providers));
+                .equals(other.providerId, providerId));
   }
 
   @JsonKey(ignore: true)
@@ -236,8 +212,7 @@ class _$_AuthUser extends _AuthUser {
       const DeepCollectionEquality().hash(phone),
       const DeepCollectionEquality().hash(name),
       const DeepCollectionEquality().hash(photo),
-      const DeepCollectionEquality().hash(providerId),
-      const DeepCollectionEquality().hash(_providers));
+      const DeepCollectionEquality().hash(providerId));
 
   @JsonKey(ignore: true)
   @override
@@ -259,8 +234,7 @@ abstract class _AuthUser extends AuthUser {
       final String? phone,
       final String? name,
       final String? photo,
-      final String? providerId,
-      final List<SocialProvider> providers}) = _$_AuthUser;
+      final String? providerId}) = _$_AuthUser;
   const _AuthUser._() : super._();
 
   factory _AuthUser.fromJson(Map<String, dynamic> json) = _$_AuthUser.fromJson;
@@ -277,8 +251,6 @@ abstract class _AuthUser extends AuthUser {
   String? get photo;
   @override
   String? get providerId;
-  @override
-  List<SocialProvider> get providers;
   @override
   @JsonKey(ignore: true)
   _$$_AuthUserCopyWith<_$_AuthUser> get copyWith =>

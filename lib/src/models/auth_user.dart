@@ -9,7 +9,7 @@ enum SocialProvider {
 
   /// Facebook provider
   facebook('facebook', 'facebook.com'),
-  
+
   /// Apple provider
   apple('apple', 'apple.com');
 
@@ -32,8 +32,7 @@ class AuthUser with _$AuthUser {
       String? phone,
       String? name,
       String? photo,
-      String? providerId,
-      @Default(<SocialProvider>[]) List<SocialProvider> providers}) = _AuthUser;
+      String? providerId}) = _AuthUser;
 
   const AuthUser._();
 
@@ -51,8 +50,13 @@ class AuthUser with _$AuthUser {
   bool get isNotEmpty => this != AuthUser.empty;
 
   /// Getter to determine if the account has google linked
-  bool get isGoogleLinked => providers.contains(SocialProvider.google);
+  bool get isGoogleLinked =>
+      providerId ==
+      SocialProvider.google.id; // providers.contains(SocialProvider.google);
 
   /// Getter to determine if the account has facebook linked
-  bool get isFacebookLinked => providers.contains(SocialProvider.facebook);
+  bool get isFacebookLinked =>
+      providerId ==
+      SocialProvider
+          .facebook.id; // providers.contains(SocialProvider.facebook);
 }
