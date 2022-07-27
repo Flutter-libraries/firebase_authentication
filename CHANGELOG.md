@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Update packages versions
+
 ## 0.0.4
 
 * Update packages versions

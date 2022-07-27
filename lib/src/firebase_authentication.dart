@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:firebase_authentication/firebase_authentication.dart';
 import 'package:firebase_authentication/src/cache.dart';
 import 'package:firebase_authentication/src/models/auth_user.dart';
@@ -188,13 +186,12 @@ class AuthenticationRepository {
     FacebookAuth? facebookAuth,
   })  : _cache = cache ?? CacheClient(),
         _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _firebaseAuthPlatform = FirebaseAuthPlatform.instance,
         _googleSignIn = googleSignIn ?? GoogleSignIn.standard(),
         _facebookAuth = facebookAuth ?? FacebookAuth.instance;
 
   final CacheClient _cache;
   final FirebaseAuth _firebaseAuth;
-  final FirebaseAuthPlatform _firebaseAuthPlatform;
+
   final GoogleSignIn _googleSignIn;
   final FacebookAuth _facebookAuth;
 
@@ -502,18 +499,18 @@ class AuthenticationRepository {
   /// Throws a [LogInWithGoogleFailure] if an exception occurs.
   Future<void> logInWithPhoneWeb(String phoneNumber) async {
     final confirmationResult = await _firebaseAuth.signInWithPhoneNumber(
-        phoneNumber,
-        // RecaptchaVerifier(
-        //   auth: _firebaseAuthPlatform,
-        //   container: 'recaptcha',
-        //   size: RecaptchaVerifierSize.compact,
-        //   theme: RecaptchaVerifierTheme.dark,
-        //   onSuccess: () => log('reCAPTCHA Completed!'),
-        //   onError: (FirebaseAuthException error) =>
-        //       log(error.message ?? 'Unknown Error'),
-        //   onExpired: () => log('reCAPTCHA Expired!'),
-        // )
-        );
+      phoneNumber,
+      // RecaptchaVerifier(
+      //   auth: _firebaseAuthPlatform,
+      //   container: 'recaptcha',
+      //   size: RecaptchaVerifierSize.compact,
+      //   theme: RecaptchaVerifierTheme.dark,
+      //   onSuccess: () => log('reCAPTCHA Completed!'),
+      //   onError: (FirebaseAuthException error) =>
+      //       log(error.message ?? 'Unknown Error'),
+      //   onExpired: () => log('reCAPTCHA Expired!'),
+      // )
+    );
 
     _confirmationResult = confirmationResult;
   }
