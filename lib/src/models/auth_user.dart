@@ -3,6 +3,21 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'auth_user.freezed.dart';
 part 'auth_user.g.dart';
 
+enum SocialProvider {
+  /// Google provider
+  google('google', 'google.com'),
+
+  /// Facebook provider
+  facebook('facebook', 'facebook.com'),
+  
+  /// Apple provider
+  apple('apple', 'apple.com');
+
+  final String id;
+  final String domain;
+  const SocialProvider(this.id, this.domain);
+}
+
 /// {@template user}
 /// AuthUser model
 ///
@@ -17,7 +32,8 @@ class AuthUser with _$AuthUser {
       String? phone,
       String? name,
       String? photo,
-      String? providerId}) = _AuthUser;
+      String? providerId,
+      @Default(<SocialProvider>[]) List<SocialProvider> providers}) = _AuthUser;
 
   const AuthUser._();
 
@@ -33,4 +49,10 @@ class AuthUser with _$AuthUser {
 
   /// Convenience getter to determine whether the current user is not empty.
   bool get isNotEmpty => this != AuthUser.empty;
+
+  /// Getter to determine if the account has google linked
+  bool get isGoogleLinked => providers.contains(SocialProvider.google);
+
+  /// Getter to determine if the account has facebook linked
+  bool get isFacebookLinked => providers.contains(SocialProvider.facebook);
 }

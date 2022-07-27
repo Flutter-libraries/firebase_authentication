@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer' as dev;
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:crypto/crypto.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:firebase_authentication/firebase_authentication.dart';
 import 'package:firebase_authentication/src/cache.dart';
 import 'package:firebase_authentication/src/models/auth_user.dart';
@@ -20,7 +20,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 String generateNonce([int length = 32]) {
   const charset =
       '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
-  final random = Random.secure();
+  final random = math.Random.secure();
   return List.generate(length, (_) => charset[random.nextInt(charset.length)])
       .join();
 }
@@ -183,16 +183,18 @@ class AuthenticationRepository {
   /// {@macro authentication_repository}
   AuthenticationRepository({
     CacheClient? cache,
-    firebase_auth.FirebaseAuth? firebaseAuth,
+    FirebaseAuth? firebaseAuth,
     GoogleSignIn? googleSignIn,
     FacebookAuth? facebookAuth,
   })  : _cache = cache ?? CacheClient(),
-        _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
+        _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
+        _firebaseAuthPlatform = FirebaseAuthPlatform.instance,
         _googleSignIn = googleSignIn ?? GoogleSignIn.standard(),
         _facebookAuth = facebookAuth ?? FacebookAuth.instance;
 
   final CacheClient _cache;
-  final firebase_auth.FirebaseAuth _firebaseAuth;
+  final FirebaseAuth _firebaseAuth;
+  final FirebaseAuthPlatform _firebaseAuthPlatform;
   final GoogleSignIn _googleSignIn;
   final FacebookAuth _facebookAuth;
 
@@ -260,34 +262,95 @@ class AuthenticationRepository {
     }
   }
 
-  ///
-  late String? providerId;
+  /// Link provider to user
+  Future<void> linkWithProvider(SocialProvider provider) async {
+    try {
+      if (kIsWeb) {
+        await _linkWithPopup(provider);
+      } else if (provider == SocialProvider.google) {
+        await _linkWithGoogle();
+      } else if (provider == SocialProvider.facebook) {
+        await _linkWithFacebook();
+      } else {
+        throw const LogInWithEmailAndPasswordFailure();
+      }
+    } on FirebaseAuthException catch (e) {
+      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
+    } catch (e) {
+      throw const LogInWithEmailAndPasswordFailure();
+    }
+  }
+
+  /// Link provider to user
+  Future<void> _linkWithGoogle() async {
+    try {
+      final googleUser = await _googleSignIn.signIn();
+      final googleAuth = await googleUser!.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await _firebaseAuth.currentUser?.linkWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
+    } catch (_) {
+      throw const LogInWithEmailAndPasswordFailure();
+    }
+  }
+
+  /// Link provider to user
+  Future<void> _linkWithFacebook() async {
+    try {
+      // Trigger the sign-in flow
+      final loginResult = await _facebookAuth.login();
+
+      if (loginResult.accessToken != null) {
+        // Create a credential from the access token
+        final facebookAuthCredential =
+            FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+        await _firebaseAuth.currentUser
+            ?.linkWithCredential(facebookAuthCredential);
+      }
+    } on FirebaseAuthException catch (e) {
+      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
+    } catch (_) {
+      throw const LogInWithEmailAndPasswordFailure();
+    }
+  }
+
+  Future<void> _linkWithPopup(SocialProvider provider) async {
+    await _firebaseAuth.currentUser?.linkWithPopup(
+        provider == SocialProvider.facebook
+            ? FacebookAuthProvider()
+            : GoogleAuthProvider());
+  }
 
   /// Starts the Sign In with Google Flow.
   ///
   /// Throws a [LogInWithGoogleFailure] if an exception occurs.
   Future<void> logInWithGoogle() async {
     try {
-      late final firebase_auth.AuthCredential credential;
+      late final AuthCredential credential;
       if (isWeb) {
-        final googleProvider = firebase_auth.GoogleAuthProvider();
-        final userCredential = await _firebaseAuth.signInWithPopup(
+        final googleProvider = GoogleAuthProvider();
+
+        final credential = await _firebaseAuth.signInWithPopup(
           googleProvider,
         );
-        credential = userCredential.credential!;
-
-        providerId = credential.providerId;
+        if (credential.credential != null)
+          await _firebaseAuth.signInWithCredential(credential.credential!);
       } else {
         final googleUser = await _googleSignIn.signIn();
         final googleAuth = await googleUser!.authentication;
-        credential = firebase_auth.GoogleAuthProvider.credential(
+        credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
+        await _firebaseAuth.signInWithCredential(credential);
       }
-
-      await _firebaseAuth.signInWithCredential(credential);
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e, s) {
       throw LogInWithGoogleFailure.fromCode(e.code);
     } catch (_) {
       throw const LogInWithGoogleFailure();
@@ -394,7 +457,7 @@ class AuthenticationRepository {
   /// Starts the Sign In with Phone Flow.
   ///
   /// Throws a [LogInWithGoogleFailure] if an exception occurs.
-  Future<void> logInWithPhone(String phoneNumber) async {
+  Future<void> logInWithPhone(String phoneNumber, Function() onCodeSent) async {
     try {
       await _firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
@@ -407,25 +470,30 @@ class AuthenticationRepository {
         verificationFailed: (FirebaseAuthException e) {
           throw LogInWithGoogleFailure.fromCode(e.code);
         },
-        codeSent: (String verificationId, int? resendToken) {},
+        codeSent: (String verificationId, int? resendToken) {
+          this.verificationId = verificationId;
+          onCodeSent();
+        },
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
-      // Trigger the sign-in flow
-      final loginResult = await _facebookAuth.login();
-
-      if (loginResult.accessToken != null) {
-        // Create a credential from the access token
-        final facebookAuthCredential =
-            FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-        // Once signed in, return the UserCredential
-        await _firebaseAuth.signInWithCredential(facebookAuthCredential);
-      }
     } on FirebaseAuthException catch (e) {
       throw LogInWithGoogleFailure.fromCode(e.code);
     } catch (_) {
       throw const LogInWithGoogleFailure();
     }
+  }
+
+  /// Store verification id
+  late String verificationId;
+
+  /// Confirme phone with code
+  Future<void> confirmPhoneCode(String code) async {
+    // Create a PhoneAuthCredential with the code
+    final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId, smsCode: code);
+
+    // Sign the user in (or link) with the credential
+    await _firebaseAuth.signInWithCredential(credential);
   }
 
   /// Starts the Sign In with Phone Flow on Web platform
@@ -435,7 +503,14 @@ class AuthenticationRepository {
     final confirmationResult = await _firebaseAuth.signInWithPhoneNumber(
         phoneNumber,
         RecaptchaVerifier(
+          auth: _firebaseAuthPlatform,
+          container: 'recaptcha',
           size: RecaptchaVerifierSize.compact,
+          theme: RecaptchaVerifierTheme.dark,
+          onSuccess: () => log('reCAPTCHA Completed!'),
+          onError: (FirebaseAuthException error) =>
+              log(error.message ?? 'Unknown Error'),
+          onExpired: () => log('reCAPTCHA Expired!'),
         ));
 
     _confirmationResult = confirmationResult;
@@ -481,17 +556,27 @@ class AuthenticationRepository {
       throw LogOutFailure();
     }
   }
+
+  /// Unlink provider from user
+  Future<void> unlinkProvider(SocialProvider provider) async {
+    try {
+      await _firebaseAuth.currentUser?.unlink(provider.domain);
+    } on FirebaseAuthException catch (e) {
+      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
+    } catch (_) {
+      throw const LogInWithEmailAndPasswordFailure();
+    }
+  }
 }
 
-extension on firebase_auth.User {
+extension on User {
   AuthUser get toUser {
-    String? providerId;
+    final providers = <SocialProvider>[];
+
     var finaldisplayName = displayName;
 
     if (providerData.isNotEmpty) {
-      providerId = providerData.first.providerId;
-
-// Find out a valid display name in providers when has not displayName
+      // Find out a valid display name in providers when has not displayName
       if (displayName == null || displayName!.isEmpty) {
         for (final data in providerData) {
           if (data.displayName != null && data.displayName!.isNotEmpty) {
@@ -499,18 +584,18 @@ extension on firebase_auth.User {
           }
         }
       }
-
-      providerData.map((element) {
-        dev.log(element.providerId);
-        dev.log(element.displayName!);
-      });
+      for (final userInfo in providerData) {
+        final socialProvider =
+            SocialProvider.values.where((v) => v.id == userInfo.providerId);
+        if (socialProvider.isNotEmpty) providers.add(socialProvider.first);
+      }
     }
     return AuthUser(
         id: uid,
         email: email,
         phone: phoneNumber,
         name: finaldisplayName,
-        providerId: providerId,
+        providers: providers,
         photo: photoURL);
   }
 }
