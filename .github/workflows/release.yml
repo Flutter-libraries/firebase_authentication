@@ -1,0 +1,29 @@
+name: Create release and notify by slack
+
+on: 
+  workflow_dispatch:
+    # Enable manual run
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - '!v*.staging.*'
+      - 'v*'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    name: A job create pre-release and notify by slack
+    steps:
+      - uses: actions/checkout@v3
+      - id: release
+        uses: Flutter-libraries/mayo_action_release@main
+        with:
+          repository: ${{ github.repository }}
+          tag: ${{ github.ref }}
+          environment: production
+          pre-release: false
+          personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          display_name: Mayo Cloud Firestore
+          slack_icon: https://mayosoftware.es/wp-content/uploads/2022/08/M.png
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+      - run: echo Changelog url ${{ steps.release.outputs.changelog_url }}
