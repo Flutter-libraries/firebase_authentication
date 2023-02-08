@@ -233,7 +233,7 @@ class AuthenticationRepository {
   Future<String> signUp(
       {required String email, required String password}) async {
     try {
-      final credentials = await _firebaseAuth.createUserWithEmailAndPassword(
+      final credentials = await _firebaseAuth. createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
