@@ -233,7 +233,7 @@ class AuthenticationRepository {
   Future<String> signUp(
       {required String email, required String password}) async {
     try {
-      final credentials = await _firebaseAuth. createUserWithEmailAndPassword(
+      final credentials = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -327,7 +327,7 @@ class AuthenticationRepository {
   /// Starts the Sign In with Google Flow.
   ///
   /// Throws a [LogInWithGoogleFailure] if an exception occurs.
-  Future<void> logInWithGoogle() async {
+  Future<AuthUser?> logInWithGoogle() async {
     try {
       late final AuthCredential credential;
       if (isWeb) {
@@ -337,7 +337,11 @@ class AuthenticationRepository {
           googleProvider,
         );
         if (credential.credential != null) {
-          await _firebaseAuth.signInWithCredential(credential.credential!);
+          final userCredentials =
+              await _firebaseAuth.signInWithCredential(credential.credential!);
+          return userCredentials.user == null
+              ? AuthUser.empty
+              : userCredentials.user!.toUser;
         }
       } else {
         final googleUser = await _googleSignIn.signIn();
@@ -346,8 +350,14 @@ class AuthenticationRepository {
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
-        await _firebaseAuth.signInWithCredential(credential);
+        final userCredentials =
+            await _firebaseAuth.signInWithCredential(credential);
+        return userCredentials.user == null
+            ? AuthUser.empty
+            : userCredentials.user!.toUser;
       }
+
+      return null;
     } on FirebaseAuthException catch (e) {
       throw LogInWithGoogleFailure.fromCode(e.code);
     } catch (_) {
@@ -358,7 +368,7 @@ class AuthenticationRepository {
   /// Starts the Sign In with Apple Flow.
   ///
   /// Throws a [LogInWithGoogleFailure] if an exception occurs.
-  Future<void> logInWithApple() async {
+  Future<AuthUser?> logInWithApple() async {
     try {
       final rawNonce = generateNonce();
       final nonce = sha256ofString(rawNonce);
@@ -381,7 +391,11 @@ class AuthenticationRepository {
       // Sign in the user with Firebase. If the nonce we generated earlier does
       // not match the nonce in `appleCredential.identityToken`, sign in will
       // fail.
-      await _firebaseAuth.signInWithCredential(oauthCredential);
+      final userCredentials =
+          await _firebaseAuth.signInWithCredential(oauthCredential);
+      return userCredentials.user == null
+          ? AuthUser.empty
+          : userCredentials.user!.toUser;
     } on FirebaseAuthException catch (e) {
       throw LogInWithGoogleFailure.fromCode(e.code);
     } catch (_) {
@@ -411,7 +425,7 @@ class AuthenticationRepository {
   /// Starts the Sign In with Facebook Flow.
   ///
   /// Throws a [LogInWithGoogleFailure] if an exception occurs.
-  Future<void> logInWithFacebook() async {
+  Future<AuthUser?> logInWithFacebook() async {
     try {
       // Trigger the sign-in flow
       final loginResult = await _facebookAuth.login();
@@ -422,8 +436,13 @@ class AuthenticationRepository {
             FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
         // Once signed in, return the UserCredential
-        await _firebaseAuth.signInWithCredential(facebookAuthCredential);
+        final userCredentials =
+            await _firebaseAuth.signInWithCredential(facebookAuthCredential);
+        return userCredentials.user == null
+            ? AuthUser.empty
+            : userCredentials.user!.toUser;
       }
+      return null;
     } on FirebaseAuthException catch (e) {
       throw LogInWithGoogleFailure.fromCode(e.code);
     } catch (_) {
