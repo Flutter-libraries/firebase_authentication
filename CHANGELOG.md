@@ -1,3 +1,7 @@
+## 0.0.11
+
+Returns the user info
+
 ## 0.0.10
 
 * Update packages versions

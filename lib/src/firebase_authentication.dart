@@ -359,7 +359,9 @@ class AuthenticationRepository {
 
       return null;
     } on FirebaseAuthException catch (e) {
-      throw LogInWithGoogleFailure.fromCode(e.code);
+      if (e.code != 'popup-closed-by-user') {
+        throw LogInWithGoogleFailure.fromCode(e.code);
+      }
     } catch (_) {
       throw const LogInWithGoogleFailure();
     }

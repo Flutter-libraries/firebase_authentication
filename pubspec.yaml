@@ -1,6 +1,6 @@
 name: firebase_authentication
 description: Dart package which manages the authentication domain.
-version: 0.0.10
+version: 0.0.11
 homepage: https://github.com/Flutter-libraries/firebase_authentication
 
 environment:
