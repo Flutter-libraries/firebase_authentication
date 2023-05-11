@@ -1,3 +1,7 @@
+## 0.0.12
+
+No exception when user close the dialog on web
+
 ## 0.0.11
 
 Returns the user info

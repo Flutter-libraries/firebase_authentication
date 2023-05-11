@@ -36,6 +36,7 @@ String sha256ofString(String input) {
 class SignUpWithEmailAndPasswordFailure implements Exception {
   /// {@macro sign_up_with_email_and_password_failure}
   const SignUpWithEmailAndPasswordFailure([
+    this.code = 'unknown',
     this.message = 'An unknown exception occurred.',
   ]);
 
@@ -45,29 +46,37 @@ class SignUpWithEmailAndPasswordFailure implements Exception {
   factory SignUpWithEmailAndPasswordFailure.fromCode(String code) {
     switch (code) {
       case 'invalid-email':
-        return const SignUpWithEmailAndPasswordFailure(
+        return SignUpWithEmailAndPasswordFailure(
+          code,
           'Email is not valid or badly formatted.',
         );
       case 'user-disabled':
-        return const SignUpWithEmailAndPasswordFailure(
+        return SignUpWithEmailAndPasswordFailure(
+          code,
           'This user has been disabled. Please contact support for help.',
         );
       case 'email-already-in-use':
-        return const SignUpWithEmailAndPasswordFailure(
+        return SignUpWithEmailAndPasswordFailure(
+          code,
           'An account already exists for that email.',
         );
       case 'operation-not-allowed':
-        return const SignUpWithEmailAndPasswordFailure(
+        return SignUpWithEmailAndPasswordFailure(
+          code,
           'Operation is not allowed.  Please contact support.',
         );
       case 'weak-password':
-        return const SignUpWithEmailAndPasswordFailure(
+        return SignUpWithEmailAndPasswordFailure(
+          code,
           'Please enter a stronger password.',
         );
       default:
-        return const SignUpWithEmailAndPasswordFailure();
+        return SignUpWithEmailAndPasswordFailure(code);
     }
   }
+
+  /// The associated code.
+  final String code;
 
   /// The associated error message.
   final String message;
@@ -80,6 +89,7 @@ class SignUpWithEmailAndPasswordFailure implements Exception {
 class LogInWithEmailAndPasswordFailure implements Exception {
   /// {@macro log_in_with_email_and_password_failure}
   const LogInWithEmailAndPasswordFailure([
+    this.code = 'unknown',
     this.message = 'An unknown exception occurred.',
   ]);
 
@@ -88,25 +98,32 @@ class LogInWithEmailAndPasswordFailure implements Exception {
   factory LogInWithEmailAndPasswordFailure.fromCode(String code) {
     switch (code) {
       case 'invalid-email':
-        return const LogInWithEmailAndPasswordFailure(
+        return LogInWithEmailAndPasswordFailure(
+          code,
           'Email is not valid or badly formatted.',
         );
       case 'user-disabled':
-        return const LogInWithEmailAndPasswordFailure(
+        return LogInWithEmailAndPasswordFailure(
+          code,
           'This user has been disabled. Please contact support for help.',
         );
       case 'user-not-found':
-        return const LogInWithEmailAndPasswordFailure(
+        return LogInWithEmailAndPasswordFailure(
+          code,
           'Email is not found, please create an account.',
         );
       case 'wrong-password':
-        return const LogInWithEmailAndPasswordFailure(
+        return LogInWithEmailAndPasswordFailure(
+          code,
           'Incorrect password, please try again.',
         );
       default:
-        return const LogInWithEmailAndPasswordFailure();
+        return LogInWithEmailAndPasswordFailure(code);
     }
   }
+
+  /// The associated code.
+  final String code;
 
   /// The associated error message.
   final String message;
@@ -119,6 +136,7 @@ class LogInWithEmailAndPasswordFailure implements Exception {
 class LogInWithGoogleFailure implements Exception {
   /// {@macro log_in_with_google_failure}
   const LogInWithGoogleFailure([
+    this.code = 'unknown',
     this.message = 'An unknown exception occurred.',
   ]);
 
@@ -127,45 +145,57 @@ class LogInWithGoogleFailure implements Exception {
   factory LogInWithGoogleFailure.fromCode(String code) {
     switch (code) {
       case 'account-exists-with-different-credential':
-        return const LogInWithGoogleFailure(
+        return LogInWithGoogleFailure(
+          code,
           'Account exists with different credentials.',
         );
       case 'invalid-credential':
-        return const LogInWithGoogleFailure(
+        return LogInWithGoogleFailure(
+          code,
           'The credential received is malformed or has expired.',
         );
       case 'operation-not-allowed':
-        return const LogInWithGoogleFailure(
+        return LogInWithGoogleFailure(
+          code,
           'Operation is not allowed.  Please contact support.',
         );
       case 'user-disabled':
-        return const LogInWithGoogleFailure(
+        return LogInWithGoogleFailure(
+          code,
           'This user has been disabled. Please contact support for help.',
         );
       case 'user-not-found':
-        return const LogInWithGoogleFailure(
+        return LogInWithGoogleFailure(
+          code,
           'Email is not found, please create an account.',
         );
       case 'wrong-password':
-        return const LogInWithGoogleFailure(
+        return LogInWithGoogleFailure(
+          code,
           'Incorrect password, please try again.',
         );
       case 'invalid-verification-code':
-        return const LogInWithGoogleFailure(
+        return LogInWithGoogleFailure(
+          code,
           'The credential verification code received is invalid.',
         );
       case 'invalid-verification-id':
-        return const LogInWithGoogleFailure(
+        return LogInWithGoogleFailure(
+          code,
           'The credential verification ID received is invalid.',
         );
       case 'invalid-phone-number':
-        return const LogInWithGoogleFailure(
+        return LogInWithGoogleFailure(
+          code,
           'The provided phone number is not valid',
         );
       default:
-        return const LogInWithGoogleFailure();
+        return LogInWithGoogleFailure(code);
     }
   }
+
+  /// The associated code.
+  final String code;
 
   /// The associated error message.
   final String message;
@@ -432,18 +462,18 @@ class AuthenticationRepository {
       // Trigger the sign-in flow
       final loginResult = await _facebookAuth.login();
 
-      if (loginResult.accessToken != null) {
+      if (loginResult.status == LoginStatus.success) {
         // Create a credential from the access token
-        final facebookAuthCredential =
+        final OAuthCredential credential =
             FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
         // Once signed in, return the UserCredential
         final userCredentials =
-            await _firebaseAuth.signInWithCredential(facebookAuthCredential);
+            await FirebaseAuth.instance.signInWithCredential(credential);
         return userCredentials.user == null
             ? AuthUser.empty
             : userCredentials.user!.toUser;
       }
+
       return null;
     } on FirebaseAuthException catch (e) {
       throw LogInWithGoogleFailure.fromCode(e.code);
