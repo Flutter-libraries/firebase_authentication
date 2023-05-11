@@ -1,3 +1,7 @@
+## 0.0.13
+
+Added code to exceptions
+
 ## 0.0.12
 
 No exception when user close the dialog on web
