@@ -26,13 +26,15 @@ enum SocialProvider {
 @freezed
 class AuthUser with _$AuthUser {
   /// {@macro user}
-  const factory AuthUser(
-      {@Default('') String id,
-      String? email,
-      String? phone,
-      String? name,
-      String? photo,
-      String? providerId}) = _AuthUser;
+  const factory AuthUser({
+    @Default('') String id,
+    String? email,
+    String? phone,
+    String? name,
+    String? photo,
+    String? providerId,
+    @Default(false) bool emailVerified,
+  }) = _AuthUser;
 
   const AuthUser._();
 

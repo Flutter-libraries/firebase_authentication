@@ -251,6 +251,19 @@ class AuthenticationRepository {
     });
   }
 
+  /// Stream of [AuthUser] which will emit the current user when
+  /// the authentication state changes.
+  /// This stream will also emit when the user is signed out.
+  /// 
+  /// Emits [AuthUser.empty] if the user is not authenticated.
+  Stream<AuthUser> get userChanges {
+    return _firebaseAuth.userChanges().map((firebaseUser) {
+      final user = firebaseUser == null ? AuthUser.empty : firebaseUser.toUser;
+      _cache.write(key: userCacheKey, value: user);
+      return user;
+    });
+  }
+
   /// Returns the current cached user.
   /// Defaults to [AuthUser.empty] if there is no cached user.
   AuthUser get currentUser {
@@ -260,8 +273,10 @@ class AuthenticationRepository {
   /// Creates a new user with the provided [email] and [password].
   ///
   /// Throws a [SignUpWithEmailAndPasswordFailure] if an exception occurs.
-  Future<String> signUp(
-      {required String email, required String password}) async {
+  Future<String> signUp({
+    required String email,
+    required String password,
+  }) async {
     try {
       final credentials = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
@@ -349,9 +364,10 @@ class AuthenticationRepository {
 
   Future<void> _linkWithPopup(SocialProvider provider) async {
     await _firebaseAuth.currentUser?.linkWithPopup(
-        provider == SocialProvider.facebook
-            ? FacebookAuthProvider()
-            : GoogleAuthProvider());
+      provider == SocialProvider.facebook
+          ? FacebookAuthProvider()
+          : GoogleAuthProvider(),
+    );
   }
 
   /// Starts the Sign In with Google Flow.
@@ -539,7 +555,9 @@ class AuthenticationRepository {
   Future<void> confirmPhoneCode(String code) async {
     // Create a PhoneAuthCredential with the code
     final credential = PhoneAuthProvider.credential(
-        verificationId: verificationId, smsCode: code);
+      verificationId: verificationId,
+      smsCode: code,
+    );
 
     // Sign the user in (or link) with the credential
     await _firebaseAuth.signInWithCredential(credential);
@@ -617,6 +635,17 @@ class AuthenticationRepository {
       throw const LogInWithEmailAndPasswordFailure();
     }
   }
+
+  /// Send email verification
+  Future<void> sendEmailVerification() async {
+    try {
+      await _firebaseAuth.currentUser?.sendEmailVerification();
+    } on FirebaseAuthException catch (e) {
+      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
+    } catch (_) {
+      throw const LogInWithEmailAndPasswordFailure();
+    }
+  }
 }
 
 extension on User {
@@ -641,11 +670,13 @@ extension on User {
       }
     }
     return AuthUser(
-        id: uid,
-        email: email,
-        phone: phoneNumber,
-        name: finaldisplayName,
-        // providers: providers,
-        photo: photoURL);
+      id: uid,
+      email: email,
+      phone: phoneNumber,
+      name: finaldisplayName,
+      // providers: providers,
+      photo: photoURL,
+      emailVerified: emailVerified,
+    );
   }
 }

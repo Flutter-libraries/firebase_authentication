@@ -30,3 +30,7 @@ dev_dependencies:
   json_serializable: ^6.1.2
   mocktail: ^0.3.0
   very_good_analysis: ^4.0.0+1
+
+scripts:
+  build: "flutter pub run build_runner build --delete-conflicting-outputs"
+  watch: "flutter pub run build_runner watch --delete-conflicting-outputs"

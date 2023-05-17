@@ -13,6 +13,7 @@ _$_AuthUser _$$_AuthUserFromJson(Map<String, dynamic> json) => _$_AuthUser(
       name: json['name'] as String?,
       photo: json['photo'] as String?,
       providerId: json['providerId'] as String?,
+      emailVerified: json['emailVerified'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$_AuthUserToJson(_$_AuthUser instance) =>
@@ -23,4 +24,5 @@ Map<String, dynamic> _$$_AuthUserToJson(_$_AuthUser instance) =>
       'name': instance.name,
       'photo': instance.photo,
       'providerId': instance.providerId,
+      'emailVerified': instance.emailVerified,
     };

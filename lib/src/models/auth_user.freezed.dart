@@ -1,7 +1,7 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
-// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'auth_user.dart';
 
@@ -26,6 +26,7 @@ mixin _$AuthUser {
   String? get name => throw _privateConstructorUsedError;
   String? get photo => throw _privateConstructorUsedError;
   String? get providerId => throw _privateConstructorUsedError;
+  bool get emailVerified => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -36,59 +37,69 @@ mixin _$AuthUser {
 /// @nodoc
 abstract class $AuthUserCopyWith<$Res> {
   factory $AuthUserCopyWith(AuthUser value, $Res Function(AuthUser) then) =
-      _$AuthUserCopyWithImpl<$Res>;
+      _$AuthUserCopyWithImpl<$Res, AuthUser>;
+  @useResult
   $Res call(
       {String id,
       String? email,
       String? phone,
       String? name,
       String? photo,
-      String? providerId});
+      String? providerId,
+      bool emailVerified});
 }
 
 /// @nodoc
-class _$AuthUserCopyWithImpl<$Res> implements $AuthUserCopyWith<$Res> {
+class _$AuthUserCopyWithImpl<$Res, $Val extends AuthUser>
+    implements $AuthUserCopyWith<$Res> {
   _$AuthUserCopyWithImpl(this._value, this._then);
 
-  final AuthUser _value;
   // ignore: unused_field
-  final $Res Function(AuthUser) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? id = null,
     Object? email = freezed,
     Object? phone = freezed,
     Object? name = freezed,
     Object? photo = freezed,
     Object? providerId = freezed,
+    Object? emailVerified = null,
   }) {
     return _then(_value.copyWith(
-      id: id == freezed
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      email: email == freezed
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      phone: phone == freezed
+      phone: freezed == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String?,
-      name: name == freezed
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
-      photo: photo == freezed
+      photo: freezed == photo
           ? _value.photo
           : photo // ignore: cast_nullable_to_non_nullable
               as String?,
-      providerId: providerId == freezed
+      providerId: freezed == providerId
           ? _value.providerId
           : providerId // ignore: cast_nullable_to_non_nullable
               as String?,
-    ));
+      emailVerified: null == emailVerified
+          ? _value.emailVerified
+          : emailVerified // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ) as $Val);
   }
 }
 
@@ -98,59 +109,65 @@ abstract class _$$_AuthUserCopyWith<$Res> implements $AuthUserCopyWith<$Res> {
           _$_AuthUser value, $Res Function(_$_AuthUser) then) =
       __$$_AuthUserCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
       {String id,
       String? email,
       String? phone,
       String? name,
       String? photo,
-      String? providerId});
+      String? providerId,
+      bool emailVerified});
 }
 
 /// @nodoc
-class __$$_AuthUserCopyWithImpl<$Res> extends _$AuthUserCopyWithImpl<$Res>
+class __$$_AuthUserCopyWithImpl<$Res>
+    extends _$AuthUserCopyWithImpl<$Res, _$_AuthUser>
     implements _$$_AuthUserCopyWith<$Res> {
   __$$_AuthUserCopyWithImpl(
       _$_AuthUser _value, $Res Function(_$_AuthUser) _then)
-      : super(_value, (v) => _then(v as _$_AuthUser));
+      : super(_value, _then);
 
-  @override
-  _$_AuthUser get _value => super._value as _$_AuthUser;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? id = null,
     Object? email = freezed,
     Object? phone = freezed,
     Object? name = freezed,
     Object? photo = freezed,
     Object? providerId = freezed,
+    Object? emailVerified = null,
   }) {
     return _then(_$_AuthUser(
-      id: id == freezed
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      email: email == freezed
+      email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      phone: phone == freezed
+      phone: freezed == phone
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String?,
-      name: name == freezed
+      name: freezed == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
-      photo: photo == freezed
+      photo: freezed == photo
           ? _value.photo
           : photo // ignore: cast_nullable_to_non_nullable
               as String?,
-      providerId: providerId == freezed
+      providerId: freezed == providerId
           ? _value.providerId
           : providerId // ignore: cast_nullable_to_non_nullable
               as String?,
+      emailVerified: null == emailVerified
+          ? _value.emailVerified
+          : emailVerified // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -164,7 +181,8 @@ class _$_AuthUser extends _AuthUser {
       this.phone,
       this.name,
       this.photo,
-      this.providerId})
+      this.providerId,
+      this.emailVerified = false})
       : super._();
 
   factory _$_AuthUser.fromJson(Map<String, dynamic> json) =>
@@ -183,10 +201,13 @@ class _$_AuthUser extends _AuthUser {
   final String? photo;
   @override
   final String? providerId;
+  @override
+  @JsonKey()
+  final bool emailVerified;
 
   @override
   String toString() {
-    return 'AuthUser(id: $id, email: $email, phone: $phone, name: $name, photo: $photo, providerId: $providerId)';
+    return 'AuthUser(id: $id, email: $email, phone: $phone, name: $name, photo: $photo, providerId: $providerId, emailVerified: $emailVerified)';
   }
 
   @override
@@ -194,28 +215,25 @@ class _$_AuthUser extends _AuthUser {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_AuthUser &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.email, email) &&
-            const DeepCollectionEquality().equals(other.phone, phone) &&
-            const DeepCollectionEquality().equals(other.name, name) &&
-            const DeepCollectionEquality().equals(other.photo, photo) &&
-            const DeepCollectionEquality()
-                .equals(other.providerId, providerId));
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.photo, photo) || other.photo == photo) &&
+            (identical(other.providerId, providerId) ||
+                other.providerId == providerId) &&
+            (identical(other.emailVerified, emailVerified) ||
+                other.emailVerified == emailVerified));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(email),
-      const DeepCollectionEquality().hash(phone),
-      const DeepCollectionEquality().hash(name),
-      const DeepCollectionEquality().hash(photo),
-      const DeepCollectionEquality().hash(providerId));
+      runtimeType, id, email, phone, name, photo, providerId, emailVerified);
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_AuthUserCopyWith<_$_AuthUser> get copyWith =>
       __$$_AuthUserCopyWithImpl<_$_AuthUser>(this, _$identity);
 
@@ -234,7 +252,8 @@ abstract class _AuthUser extends AuthUser {
       final String? phone,
       final String? name,
       final String? photo,
-      final String? providerId}) = _$_AuthUser;
+      final String? providerId,
+      final bool emailVerified}) = _$_AuthUser;
   const _AuthUser._() : super._();
 
   factory _AuthUser.fromJson(Map<String, dynamic> json) = _$_AuthUser.fromJson;
@@ -251,6 +270,8 @@ abstract class _AuthUser extends AuthUser {
   String? get photo;
   @override
   String? get providerId;
+  @override
+  bool get emailVerified;
   @override
   @JsonKey(ignore: true)
   _$$_AuthUserCopyWith<_$_AuthUser> get copyWith =>
