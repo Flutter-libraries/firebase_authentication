@@ -1,3 +1,6 @@
+## 0.0.14
+
+Added emailVerification field
 ## 0.0.13
 
 Added code to exceptions
