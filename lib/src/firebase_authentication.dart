@@ -254,7 +254,7 @@ class AuthenticationRepository {
   /// Stream of [AuthUser] which will emit the current user when
   /// the authentication state changes.
   /// This stream will also emit when the user is signed out.
-  /// 
+  ///
   /// Emits [AuthUser.empty] if the user is not authenticated.
   Stream<AuthUser> get userChanges {
     return _firebaseAuth.userChanges().map((firebaseUser) {
@@ -268,6 +268,22 @@ class AuthenticationRepository {
   /// Defaults to [AuthUser.empty] if there is no cached user.
   AuthUser get currentUser {
     return _cache.read<AuthUser>(key: userCacheKey) ?? AuthUser.empty;
+  }
+
+  /// Anom sign in
+  ///
+  /// Throws a [LogInWithEmailAndPasswordFailure] if an exception occurs.
+  Future<AuthUser?> signInAnonymously() async {
+    try {
+      final userCredentials = await _firebaseAuth.signInAnonymously();
+      return userCredentials.user == null
+          ? AuthUser.empty
+          : userCredentials.user!.toUser;
+    } on FirebaseAuthException catch (e) {
+      throw LogInWithEmailAndPasswordFailure.fromCode(e.code);
+    } catch (_) {
+      throw const LogInWithEmailAndPasswordFailure();
+    }
   }
 
   /// Creates a new user with the provided [email] and [password].

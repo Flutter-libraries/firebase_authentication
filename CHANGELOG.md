@@ -1,3 +1,6 @@
+## 0.0.15
+
+Sign in anonymously
 ## 0.0.14
 
 Added emailVerification field
