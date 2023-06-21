@@ -27,6 +27,7 @@ mixin _$AuthUser {
   String? get photo => throw _privateConstructorUsedError;
   String? get providerId => throw _privateConstructorUsedError;
   bool get emailVerified => throw _privateConstructorUsedError;
+  bool get isAnonymous => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -46,7 +47,8 @@ abstract class $AuthUserCopyWith<$Res> {
       String? name,
       String? photo,
       String? providerId,
-      bool emailVerified});
+      bool emailVerified,
+      bool isAnonymous});
 }
 
 /// @nodoc
@@ -69,6 +71,7 @@ class _$AuthUserCopyWithImpl<$Res, $Val extends AuthUser>
     Object? photo = freezed,
     Object? providerId = freezed,
     Object? emailVerified = null,
+    Object? isAnonymous = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -99,6 +102,10 @@ class _$AuthUserCopyWithImpl<$Res, $Val extends AuthUser>
           ? _value.emailVerified
           : emailVerified // ignore: cast_nullable_to_non_nullable
               as bool,
+      isAnonymous: null == isAnonymous
+          ? _value.isAnonymous
+          : isAnonymous // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -117,7 +124,8 @@ abstract class _$$_AuthUserCopyWith<$Res> implements $AuthUserCopyWith<$Res> {
       String? name,
       String? photo,
       String? providerId,
-      bool emailVerified});
+      bool emailVerified,
+      bool isAnonymous});
 }
 
 /// @nodoc
@@ -138,6 +146,7 @@ class __$$_AuthUserCopyWithImpl<$Res>
     Object? photo = freezed,
     Object? providerId = freezed,
     Object? emailVerified = null,
+    Object? isAnonymous = null,
   }) {
     return _then(_$_AuthUser(
       id: null == id
@@ -168,6 +177,10 @@ class __$$_AuthUserCopyWithImpl<$Res>
           ? _value.emailVerified
           : emailVerified // ignore: cast_nullable_to_non_nullable
               as bool,
+      isAnonymous: null == isAnonymous
+          ? _value.isAnonymous
+          : isAnonymous // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -182,7 +195,8 @@ class _$_AuthUser extends _AuthUser {
       this.name,
       this.photo,
       this.providerId,
-      this.emailVerified = false})
+      this.emailVerified = false,
+      this.isAnonymous = false})
       : super._();
 
   factory _$_AuthUser.fromJson(Map<String, dynamic> json) =>
@@ -204,10 +218,13 @@ class _$_AuthUser extends _AuthUser {
   @override
   @JsonKey()
   final bool emailVerified;
+  @override
+  @JsonKey()
+  final bool isAnonymous;
 
   @override
   String toString() {
-    return 'AuthUser(id: $id, email: $email, phone: $phone, name: $name, photo: $photo, providerId: $providerId, emailVerified: $emailVerified)';
+    return 'AuthUser(id: $id, email: $email, phone: $phone, name: $name, photo: $photo, providerId: $providerId, emailVerified: $emailVerified, isAnonymous: $isAnonymous)';
   }
 
   @override
@@ -223,13 +240,15 @@ class _$_AuthUser extends _AuthUser {
             (identical(other.providerId, providerId) ||
                 other.providerId == providerId) &&
             (identical(other.emailVerified, emailVerified) ||
-                other.emailVerified == emailVerified));
+                other.emailVerified == emailVerified) &&
+            (identical(other.isAnonymous, isAnonymous) ||
+                other.isAnonymous == isAnonymous));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, email, phone, name, photo, providerId, emailVerified);
+  int get hashCode => Object.hash(runtimeType, id, email, phone, name, photo,
+      providerId, emailVerified, isAnonymous);
 
   @JsonKey(ignore: true)
   @override
@@ -253,7 +272,8 @@ abstract class _AuthUser extends AuthUser {
       final String? name,
       final String? photo,
       final String? providerId,
-      final bool emailVerified}) = _$_AuthUser;
+      final bool emailVerified,
+      final bool isAnonymous}) = _$_AuthUser;
   const _AuthUser._() : super._();
 
   factory _AuthUser.fromJson(Map<String, dynamic> json) = _$_AuthUser.fromJson;
@@ -272,6 +292,8 @@ abstract class _AuthUser extends AuthUser {
   String? get providerId;
   @override
   bool get emailVerified;
+  @override
+  bool get isAnonymous;
   @override
   @JsonKey(ignore: true)
   _$$_AuthUserCopyWith<_$_AuthUser> get copyWith =>

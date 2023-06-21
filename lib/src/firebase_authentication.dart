@@ -693,6 +693,7 @@ extension on User {
       // providers: providers,
       photo: photoURL,
       emailVerified: emailVerified,
+      isAnonymous: isAnonymous,
     );
   }
 }

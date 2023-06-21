@@ -34,6 +34,7 @@ class AuthUser with _$AuthUser {
     String? photo,
     String? providerId,
     @Default(false) bool emailVerified,
+    @Default(false) bool isAnonymous,
   }) = _AuthUser;
 
   const AuthUser._();
@@ -61,4 +62,9 @@ class AuthUser with _$AuthUser {
       providerId ==
       SocialProvider
           .facebook.id; // providers.contains(SocialProvider.facebook);
+
+  /// Getter to determine if the account has apple linked
+  bool get isAppleLinked =>
+      providerId ==
+      SocialProvider.apple.id; // providers.contains(SocialProvider.apple);
 }

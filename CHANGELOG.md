@@ -1,3 +1,6 @@
+## 0.0.16
+
+Added flag for anonymous user
 ## 0.0.15
 
 Sign in anonymously
