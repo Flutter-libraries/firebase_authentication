@@ -256,11 +256,14 @@ class AuthenticationRepository {
   /// This stream will also emit when the user is signed out.
   ///
   /// Emits [AuthUser.empty] if the user is not authenticated.
-  Stream<AuthUser> get userChanges {
-    return _firebaseAuth.userChanges().map((firebaseUser) {
-      final user = firebaseUser == null ? AuthUser.empty : firebaseUser.toUser;
+  Stream<AuthUser> get userChanges async* {
+    _firebaseAuth.userChanges().asyncMap((firebaseUser) async* {
+      final authToken = await firebaseUser?.getIdToken();
+      final user = firebaseUser == null
+          ? AuthUser.empty
+          : firebaseUser.toUser.copyWith(authToken: authToken);
       _cache.write(key: userCacheKey, value: user);
-      return user;
+      yield user;
     });
   }
 

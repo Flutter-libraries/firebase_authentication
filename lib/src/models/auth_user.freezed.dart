@@ -26,6 +26,7 @@ mixin _$AuthUser {
   String? get name => throw _privateConstructorUsedError;
   String? get photo => throw _privateConstructorUsedError;
   String? get providerId => throw _privateConstructorUsedError;
+  String? get authToken => throw _privateConstructorUsedError;
   bool get emailVerified => throw _privateConstructorUsedError;
   bool get isAnonymous => throw _privateConstructorUsedError;
 
@@ -47,6 +48,7 @@ abstract class $AuthUserCopyWith<$Res> {
       String? name,
       String? photo,
       String? providerId,
+      String? authToken,
       bool emailVerified,
       bool isAnonymous});
 }
@@ -70,6 +72,7 @@ class _$AuthUserCopyWithImpl<$Res, $Val extends AuthUser>
     Object? name = freezed,
     Object? photo = freezed,
     Object? providerId = freezed,
+    Object? authToken = freezed,
     Object? emailVerified = null,
     Object? isAnonymous = null,
   }) {
@@ -98,6 +101,10 @@ class _$AuthUserCopyWithImpl<$Res, $Val extends AuthUser>
           ? _value.providerId
           : providerId // ignore: cast_nullable_to_non_nullable
               as String?,
+      authToken: freezed == authToken
+          ? _value.authToken
+          : authToken // ignore: cast_nullable_to_non_nullable
+              as String?,
       emailVerified: null == emailVerified
           ? _value.emailVerified
           : emailVerified // ignore: cast_nullable_to_non_nullable
@@ -124,6 +131,7 @@ abstract class _$$_AuthUserCopyWith<$Res> implements $AuthUserCopyWith<$Res> {
       String? name,
       String? photo,
       String? providerId,
+      String? authToken,
       bool emailVerified,
       bool isAnonymous});
 }
@@ -145,6 +153,7 @@ class __$$_AuthUserCopyWithImpl<$Res>
     Object? name = freezed,
     Object? photo = freezed,
     Object? providerId = freezed,
+    Object? authToken = freezed,
     Object? emailVerified = null,
     Object? isAnonymous = null,
   }) {
@@ -173,6 +182,10 @@ class __$$_AuthUserCopyWithImpl<$Res>
           ? _value.providerId
           : providerId // ignore: cast_nullable_to_non_nullable
               as String?,
+      authToken: freezed == authToken
+          ? _value.authToken
+          : authToken // ignore: cast_nullable_to_non_nullable
+              as String?,
       emailVerified: null == emailVerified
           ? _value.emailVerified
           : emailVerified // ignore: cast_nullable_to_non_nullable
@@ -195,6 +208,7 @@ class _$_AuthUser extends _AuthUser {
       this.name,
       this.photo,
       this.providerId,
+      this.authToken,
       this.emailVerified = false,
       this.isAnonymous = false})
       : super._();
@@ -216,6 +230,8 @@ class _$_AuthUser extends _AuthUser {
   @override
   final String? providerId;
   @override
+  final String? authToken;
+  @override
   @JsonKey()
   final bool emailVerified;
   @override
@@ -224,7 +240,7 @@ class _$_AuthUser extends _AuthUser {
 
   @override
   String toString() {
-    return 'AuthUser(id: $id, email: $email, phone: $phone, name: $name, photo: $photo, providerId: $providerId, emailVerified: $emailVerified, isAnonymous: $isAnonymous)';
+    return 'AuthUser(id: $id, email: $email, phone: $phone, name: $name, photo: $photo, providerId: $providerId, authToken: $authToken, emailVerified: $emailVerified, isAnonymous: $isAnonymous)';
   }
 
   @override
@@ -239,6 +255,8 @@ class _$_AuthUser extends _AuthUser {
             (identical(other.photo, photo) || other.photo == photo) &&
             (identical(other.providerId, providerId) ||
                 other.providerId == providerId) &&
+            (identical(other.authToken, authToken) ||
+                other.authToken == authToken) &&
             (identical(other.emailVerified, emailVerified) ||
                 other.emailVerified == emailVerified) &&
             (identical(other.isAnonymous, isAnonymous) ||
@@ -248,7 +266,7 @@ class _$_AuthUser extends _AuthUser {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, email, phone, name, photo,
-      providerId, emailVerified, isAnonymous);
+      providerId, authToken, emailVerified, isAnonymous);
 
   @JsonKey(ignore: true)
   @override
@@ -272,6 +290,7 @@ abstract class _AuthUser extends AuthUser {
       final String? name,
       final String? photo,
       final String? providerId,
+      final String? authToken,
       final bool emailVerified,
       final bool isAnonymous}) = _$_AuthUser;
   const _AuthUser._() : super._();
@@ -290,6 +309,8 @@ abstract class _AuthUser extends AuthUser {
   String? get photo;
   @override
   String? get providerId;
+  @override
+  String? get authToken;
   @override
   bool get emailVerified;
   @override

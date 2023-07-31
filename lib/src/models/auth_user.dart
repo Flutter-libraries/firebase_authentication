@@ -33,6 +33,7 @@ class AuthUser with _$AuthUser {
     String? name,
     String? photo,
     String? providerId,
+    String? authToken,
     @Default(false) bool emailVerified,
     @Default(false) bool isAnonymous,
   }) = _AuthUser;
