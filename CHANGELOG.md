@@ -1,3 +1,7 @@
+## 0.0.18
+
+Added authToken
+
 ## 0.0.17
 
 Upgrade libraries
