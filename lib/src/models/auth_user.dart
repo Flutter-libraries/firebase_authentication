@@ -32,7 +32,7 @@ class AuthUser with _$AuthUser {
     String? phone,
     String? name,
     String? photo,
-    String? providerId,
+    @Default([]) List<SocialProvider> providers,
     String? authToken,
     @Default(false) bool emailVerified,
     @Default(false) bool isAnonymous,
@@ -54,18 +54,11 @@ class AuthUser with _$AuthUser {
   bool get isNotEmpty => this != AuthUser.empty;
 
   /// Getter to determine if the account has google linked
-  bool get isGoogleLinked =>
-      providerId ==
-      SocialProvider.google.id; // providers.contains(SocialProvider.google);
+  bool get isGoogleLinked => providers.contains(SocialProvider.google);
 
   /// Getter to determine if the account has facebook linked
-  bool get isFacebookLinked =>
-      providerId ==
-      SocialProvider
-          .facebook.id; // providers.contains(SocialProvider.facebook);
+  bool get isFacebookLinked => providers.contains(SocialProvider.facebook);
 
   /// Getter to determine if the account has apple linked
-  bool get isAppleLinked =>
-      providerId ==
-      SocialProvider.apple.id; // providers.contains(SocialProvider.apple);
+  bool get isAppleLinked => providers.contains(SocialProvider.apple);
 }

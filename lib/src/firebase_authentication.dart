@@ -691,12 +691,13 @@ extension on User {
         if (socialProvider.isNotEmpty) providers.add(socialProvider.first);
       }
     }
+    
     return AuthUser(
       id: uid,
       email: email,
       phone: phoneNumber,
       name: finaldisplayName,
-      // providers: providers,
+      providers: providers,
       photo: photoURL,
       emailVerified: emailVerified,
       isAnonymous: isAnonymous,

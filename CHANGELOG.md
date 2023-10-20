@@ -1,3 +1,7 @@
+## 0.0.19
+
+Added array of providers on user model
+
 ## 0.0.18
 
 Added authToken

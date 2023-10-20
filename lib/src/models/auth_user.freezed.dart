@@ -25,7 +25,7 @@ mixin _$AuthUser {
   String? get phone => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
   String? get photo => throw _privateConstructorUsedError;
-  String? get providerId => throw _privateConstructorUsedError;
+  List<SocialProvider> get providers => throw _privateConstructorUsedError;
   String? get authToken => throw _privateConstructorUsedError;
   bool get emailVerified => throw _privateConstructorUsedError;
   bool get isAnonymous => throw _privateConstructorUsedError;
@@ -47,7 +47,7 @@ abstract class $AuthUserCopyWith<$Res> {
       String? phone,
       String? name,
       String? photo,
-      String? providerId,
+      List<SocialProvider> providers,
       String? authToken,
       bool emailVerified,
       bool isAnonymous});
@@ -71,7 +71,7 @@ class _$AuthUserCopyWithImpl<$Res, $Val extends AuthUser>
     Object? phone = freezed,
     Object? name = freezed,
     Object? photo = freezed,
-    Object? providerId = freezed,
+    Object? providers = null,
     Object? authToken = freezed,
     Object? emailVerified = null,
     Object? isAnonymous = null,
@@ -97,10 +97,10 @@ class _$AuthUserCopyWithImpl<$Res, $Val extends AuthUser>
           ? _value.photo
           : photo // ignore: cast_nullable_to_non_nullable
               as String?,
-      providerId: freezed == providerId
-          ? _value.providerId
-          : providerId // ignore: cast_nullable_to_non_nullable
-              as String?,
+      providers: null == providers
+          ? _value.providers
+          : providers // ignore: cast_nullable_to_non_nullable
+              as List<SocialProvider>,
       authToken: freezed == authToken
           ? _value.authToken
           : authToken // ignore: cast_nullable_to_non_nullable
@@ -130,7 +130,7 @@ abstract class _$$_AuthUserCopyWith<$Res> implements $AuthUserCopyWith<$Res> {
       String? phone,
       String? name,
       String? photo,
-      String? providerId,
+      List<SocialProvider> providers,
       String? authToken,
       bool emailVerified,
       bool isAnonymous});
@@ -152,7 +152,7 @@ class __$$_AuthUserCopyWithImpl<$Res>
     Object? phone = freezed,
     Object? name = freezed,
     Object? photo = freezed,
-    Object? providerId = freezed,
+    Object? providers = null,
     Object? authToken = freezed,
     Object? emailVerified = null,
     Object? isAnonymous = null,
@@ -178,10 +178,10 @@ class __$$_AuthUserCopyWithImpl<$Res>
           ? _value.photo
           : photo // ignore: cast_nullable_to_non_nullable
               as String?,
-      providerId: freezed == providerId
-          ? _value.providerId
-          : providerId // ignore: cast_nullable_to_non_nullable
-              as String?,
+      providers: null == providers
+          ? _value._providers
+          : providers // ignore: cast_nullable_to_non_nullable
+              as List<SocialProvider>,
       authToken: freezed == authToken
           ? _value.authToken
           : authToken // ignore: cast_nullable_to_non_nullable
@@ -207,11 +207,12 @@ class _$_AuthUser extends _AuthUser {
       this.phone,
       this.name,
       this.photo,
-      this.providerId,
+      final List<SocialProvider> providers = const [],
       this.authToken,
       this.emailVerified = false,
       this.isAnonymous = false})
-      : super._();
+      : _providers = providers,
+        super._();
 
   factory _$_AuthUser.fromJson(Map<String, dynamic> json) =>
       _$$_AuthUserFromJson(json);
@@ -227,8 +228,15 @@ class _$_AuthUser extends _AuthUser {
   final String? name;
   @override
   final String? photo;
+  final List<SocialProvider> _providers;
   @override
-  final String? providerId;
+  @JsonKey()
+  List<SocialProvider> get providers {
+    if (_providers is EqualUnmodifiableListView) return _providers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_providers);
+  }
+
   @override
   final String? authToken;
   @override
@@ -240,7 +248,7 @@ class _$_AuthUser extends _AuthUser {
 
   @override
   String toString() {
-    return 'AuthUser(id: $id, email: $email, phone: $phone, name: $name, photo: $photo, providerId: $providerId, authToken: $authToken, emailVerified: $emailVerified, isAnonymous: $isAnonymous)';
+    return 'AuthUser(id: $id, email: $email, phone: $phone, name: $name, photo: $photo, providers: $providers, authToken: $authToken, emailVerified: $emailVerified, isAnonymous: $isAnonymous)';
   }
 
   @override
@@ -253,8 +261,8 @@ class _$_AuthUser extends _AuthUser {
             (identical(other.phone, phone) || other.phone == phone) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.photo, photo) || other.photo == photo) &&
-            (identical(other.providerId, providerId) ||
-                other.providerId == providerId) &&
+            const DeepCollectionEquality()
+                .equals(other._providers, _providers) &&
             (identical(other.authToken, authToken) ||
                 other.authToken == authToken) &&
             (identical(other.emailVerified, emailVerified) ||
@@ -265,8 +273,17 @@ class _$_AuthUser extends _AuthUser {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, email, phone, name, photo,
-      providerId, authToken, emailVerified, isAnonymous);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      email,
+      phone,
+      name,
+      photo,
+      const DeepCollectionEquality().hash(_providers),
+      authToken,
+      emailVerified,
+      isAnonymous);
 
   @JsonKey(ignore: true)
   @override
@@ -289,7 +306,7 @@ abstract class _AuthUser extends AuthUser {
       final String? phone,
       final String? name,
       final String? photo,
-      final String? providerId,
+      final List<SocialProvider> providers,
       final String? authToken,
       final bool emailVerified,
       final bool isAnonymous}) = _$_AuthUser;
@@ -308,7 +325,7 @@ abstract class _AuthUser extends AuthUser {
   @override
   String? get photo;
   @override
-  String? get providerId;
+  List<SocialProvider> get providers;
   @override
   String? get authToken;
   @override
