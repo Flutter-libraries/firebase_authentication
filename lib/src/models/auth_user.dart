@@ -7,11 +7,17 @@ enum SocialProvider {
   /// Google provider
   google('google', 'google.com'),
 
+  /// Google provider
+  googlecom('google.com', 'google.com'),
+
   /// Facebook provider
   facebook('facebook', 'facebook.com'),
 
   /// Apple provider
-  apple('apple', 'apple.com');
+  apple('apple', 'apple.com'),
+
+  /// Apple provider
+  applecom('apple.com', 'apple.com');
 
   final String id;
   final String domain;
