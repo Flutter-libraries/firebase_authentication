@@ -8,6 +8,7 @@ enum SocialProvider {
   google('google', 'google.com'),
 
   /// Google provider
+  @JsonValue('google.com')
   googlecom('google.com', 'google.com'),
 
   /// Facebook provider
@@ -17,6 +18,7 @@ enum SocialProvider {
   apple('apple', 'apple.com'),
 
   /// Apple provider
+  @JsonValue('apple.com')
   applecom('apple.com', 'apple.com');
 
   final String id;
