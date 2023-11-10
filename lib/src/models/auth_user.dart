@@ -3,27 +3,29 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'auth_user.freezed.dart';
 part 'auth_user.g.dart';
 
+/// List of available social providers
 enum SocialProvider {
   /// Google provider
-  google('google', 'google.com'),
-
-  /// Google provider
   @JsonValue('google.com')
-  googlecom('google.com', 'google.com'),
+  google('google.com', 'google.com'),
 
   /// Facebook provider
-  facebook('facebook', 'facebook.com'),
-
-  /// Apple provider
-  apple('apple', 'apple.com'),
+  @JsonValue('facebook.com')
+  facebook('facebook.com', 'facebook.com'),
 
   /// Apple provider
   @JsonValue('apple.com')
-  applecom('apple.com', 'apple.com');
+  apple('apple.com', 'apple.com');
 
-  final String id;
-  final String domain;
+  /// Const
   const SocialProvider(this.id, this.domain);
+
+  /// 
+  final String id;
+
+  ///
+  final String domain;
+
 }
 
 /// {@template user}

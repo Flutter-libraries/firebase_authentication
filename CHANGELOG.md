@@ -1,3 +1,6 @@
+## 0.0.21
+
+Updated array of providers on user model
 ## 0.0.20
 
 Added array of providers on user model

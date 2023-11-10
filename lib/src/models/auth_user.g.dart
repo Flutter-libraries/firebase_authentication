@@ -36,7 +36,7 @@ Map<String, dynamic> _$$_AuthUserToJson(_$_AuthUser instance) =>
     };
 
 const _$SocialProviderEnumMap = {
-  SocialProvider.google: 'google',
-  SocialProvider.facebook: 'facebook',
-  SocialProvider.apple: 'apple',
+  SocialProvider.google: 'google.com',
+  SocialProvider.facebook: 'facebook.com',
+  SocialProvider.apple: 'apple.com',
 };
