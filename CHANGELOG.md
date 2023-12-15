@@ -1,3 +1,10 @@
+## 0.0.23
+Update versions
+
+## 0.0.22
+
+Fix social providers config
+
 ## 0.0.21
 
 Updated array of providers on user model

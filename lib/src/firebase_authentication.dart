@@ -430,7 +430,10 @@ class AuthenticationRepository {
       if (e.code != 'popup-closed-by-user') {
         throw LogInWithGoogleFailure.fromCode(e.code);
       }
-    } catch (_) {
+      return null;
+    } catch (e, s) {
+      print(e);
+      print(s);
       throw const LogInWithGoogleFailure();
     }
   }
