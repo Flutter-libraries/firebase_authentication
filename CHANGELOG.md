@@ -1,3 +1,6 @@
+## 0.0.24
+Returns empty data when user close popup
+
 ## 0.0.23
 Update versions
 

@@ -413,7 +413,10 @@ class AuthenticationRepository {
         }
       } else {
         final googleUser = await _googleSignIn.signIn();
-        final googleAuth = await googleUser!.authentication;
+
+        if (googleUser == null) return null;
+
+        final googleAuth = await googleUser.authentication;
         credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
@@ -694,7 +697,7 @@ extension on User {
         if (socialProvider.isNotEmpty) providers.add(socialProvider.first);
       }
     }
-    
+
     return AuthUser(
       id: uid,
       email: email,
