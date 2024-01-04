@@ -1,3 +1,6 @@
+## 0.0.25
+Token force refresh
+
 ## 0.0.24
 Returns empty data when user close popup
 

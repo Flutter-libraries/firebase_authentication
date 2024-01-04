@@ -245,7 +245,7 @@ class AuthenticationRepository {
   /// Emits [AuthUser.empty] if the user is not authenticated.
   Stream<AuthUser> get user {
     return _firebaseAuth.authStateChanges().asyncMap((firebaseUser) async {
-      final authToken = await firebaseUser?.getIdToken();
+      final authToken = await firebaseUser?.getIdToken(true);
       final user = firebaseUser == null
           ? AuthUser.empty
           : firebaseUser.toUser.copyWith(authToken: authToken);
@@ -261,7 +261,7 @@ class AuthenticationRepository {
   /// Emits [AuthUser.empty] if the user is not authenticated.
   Stream<AuthUser> get userChanges async* {
     _firebaseAuth.userChanges().asyncMap((firebaseUser) async* {
-      final authToken = await firebaseUser?.getIdToken();
+      final authToken = await firebaseUser?.getIdToken(true);
       final user = firebaseUser == null
           ? AuthUser.empty
           : firebaseUser.toUser.copyWith(authToken: authToken);
