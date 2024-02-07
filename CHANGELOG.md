@@ -1,3 +1,6 @@
+## 0.0.26
+Token refresh events
+
 ## 0.0.25
 Token force refresh
 
