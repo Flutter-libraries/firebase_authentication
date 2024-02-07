@@ -270,6 +270,22 @@ class AuthenticationRepository {
     });
   }
 
+  /// Stream of [AuthUser] which will emit the current user when
+  /// the authentication state changes.
+  /// This stream will also emit when the user is signed out.
+  ///
+  /// Emits [AuthUser.empty] if the user is not authenticated.
+  Stream<AuthUser> get tokenRefresh {
+    return _firebaseAuth.idTokenChanges().asyncMap((firebaseUser) async {
+      final authToken = await firebaseUser?.getIdToken(true);
+      final user = firebaseUser == null
+          ? AuthUser.empty
+          : firebaseUser.toUser.copyWith(authToken: authToken);
+      _cache.write(key: userCacheKey, value: user);
+      return user;
+    });
+  }
+
   /// Returns the current cached user.
   /// Defaults to [AuthUser.empty] if there is no cached user.
   AuthUser get currentUser {
