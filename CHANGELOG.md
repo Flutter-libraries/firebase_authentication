@@ -1,3 +1,6 @@
+## 0.0.27
+Update phone for authentication
+
 ## 0.0.26
 Token refresh events
 

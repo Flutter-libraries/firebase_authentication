@@ -566,30 +566,48 @@ class AuthenticationRepository {
   /// Starts the Sign In with Phone Flow.
   ///
   /// Throws a [LogInWithGoogleFailure] if an exception occurs.
-  Future<void> logInWithPhone(String phoneNumber, Function() onCodeSent) async {
-    try {
-      await _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
+  Future<void> logInWithPhone(
+    String phoneNumber,
+    void Function() onCodeSent,
+  ) async {
+    final completer = Completer<void>();
+    // try {
+    await _firebaseAuth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        try {
           // ANDROID ONLY!
 
           // Sign the user in (or link) with the auto-generated credential
           await _firebaseAuth.signInWithCredential(credential);
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          throw LogInWithGoogleFailure.fromCode(e.code);
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          this.verificationId = verificationId;
-          onCodeSent();
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {},
-      );
-    } on FirebaseAuthException catch (e) {
-      throw LogInWithGoogleFailure.fromCode(e.code);
-    } catch (_) {
-      throw const LogInWithGoogleFailure();
-    }
+
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
+        } catch (e) {
+          if (!completer.isCompleted) {
+            completer.completeError(e);
+          }
+        }
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (!completer.isCompleted) {
+          completer.completeError(LogInWithGoogleFailure.fromCode(e.code));
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        this.verificationId = verificationId;
+        onCodeSent();
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+
+    return completer.future;
+    // } on FirebaseAuthException catch (e) {
+    //   throw LogInWithGoogleFailure.fromCode(e.code);
+    // } catch (_) {
+    //   throw const LogInWithGoogleFailure();
+    // }
   }
 
   /// Store verification id
@@ -633,6 +651,24 @@ class AuthenticationRepository {
   /// Throws a [LogInWithGoogleFailure] if an exception occurs.
   Future<void> confirmPhoneCodeWeb(String verificationCode) async {
     await _confirmationResult.confirm(verificationCode);
+  }
+
+  /// Update phone number
+  ///
+  /// Throws a [LogInWithGoogleFailure] if an exception occurs.
+  Future<void> updatePhoneNumber(String code) async {
+    try {
+      await _firebaseAuth.currentUser?.updatePhoneNumber(
+        PhoneAuthProvider.credential(
+          verificationId: verificationId,
+          smsCode: code,
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      throw LogInWithGoogleFailure.fromCode(e.code);
+    } catch (_) {
+      throw const LogInWithGoogleFailure();
+    }
   }
 
   /// Signs in with the provided [email] and [password].
