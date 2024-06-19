@@ -387,8 +387,8 @@ class AuthenticationRepository {
 
       if (loginResult.accessToken != null) {
         // Create a credential from the access token
-        final facebookAuthCredential =
-            FacebookAuthProvider.credential(loginResult.accessToken!.token);
+        final facebookAuthCredential = FacebookAuthProvider.credential(
+            loginResult.accessToken!.tokenString);
 
         await _firebaseAuth.currentUser
             ?.linkWithCredential(facebookAuthCredential);
@@ -524,8 +524,8 @@ class AuthenticationRepository {
 
       if (loginResult.status == LoginStatus.success) {
         // Create a credential from the access token
-        final OAuthCredential credential =
-            FacebookAuthProvider.credential(loginResult.accessToken!.token);
+        final OAuthCredential credential = FacebookAuthProvider.credential(
+            loginResult.accessToken!.tokenString);
         // Once signed in, return the UserCredential
         final userCredentials =
             await FirebaseAuth.instance.signInWithCredential(credential);
