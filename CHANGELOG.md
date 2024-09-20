@@ -1,6 +1,9 @@
 ## 0.0.28
 Update dependencies
 
+## 0.0.28
+Update dependencies
+
 ## 0.0.27
 Update phone for authentication
 

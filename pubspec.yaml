@@ -1,6 +1,6 @@
 name: firebase_authentication
 description: Dart package which manages the authentication domain.
-version: 0.0.28
+version: 0.0.29
 homepage: https://github.com/Flutter-libraries/firebase_authentication
 
 environment:
@@ -29,7 +29,7 @@ dev_dependencies:
   freezed: ^2.1.0+1
   json_serializable: ^6.1.2
   mocktail: ^1.0.2
-  very_good_analysis: ^5.0.0+1
+  very_good_analysis: ^6.0.0
 
 scripts:
   build: "flutter pub run build_runner build --delete-conflicting-outputs"
