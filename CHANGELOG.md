@@ -1,4 +1,8 @@
-## 0.0.28
+## 0.0.30
+- Update dependencies
+- Social login updates
+
+## 0.0.29
 Update dependencies
 
 ## 0.0.28

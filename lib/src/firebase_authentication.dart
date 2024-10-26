@@ -388,7 +388,8 @@ class AuthenticationRepository {
       if (loginResult.accessToken != null) {
         // Create a credential from the access token
         final facebookAuthCredential = FacebookAuthProvider.credential(
-            loginResult.accessToken!.tokenString);
+          loginResult.accessToken!.tokenString,
+        );
 
         await _firebaseAuth.currentUser
             ?.linkWithCredential(facebookAuthCredential);
@@ -462,29 +463,12 @@ class AuthenticationRepository {
   /// Throws a [LogInWithGoogleFailure] if an exception occurs.
   Future<AuthUser?> logInWithApple() async {
     try {
-      final rawNonce = generateNonce();
-      final nonce = sha256ofString(rawNonce);
+      final appleProvider = AppleAuthProvider();
 
-      // Request credential for the currently signed in Apple account.
-      final appleCredential = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-        nonce: nonce,
-      );
+      final userCredentials = kIsWeb
+          ? await FirebaseAuth.instance.signInWithPopup(appleProvider)
+          : await FirebaseAuth.instance.signInWithProvider(appleProvider);
 
-      // Create an `OAuthCredential` from the credential returned by Apple.
-      final oauthCredential = OAuthProvider('apple.com').credential(
-        idToken: appleCredential.identityToken,
-        rawNonce: rawNonce,
-      );
-
-      // Sign in the user with Firebase. If the nonce we generated earlier does
-      // not match the nonce in `appleCredential.identityToken`, sign in will
-      // fail.
-      final userCredentials =
-          await _firebaseAuth.signInWithCredential(oauthCredential);
       return userCredentials.user == null
           ? AuthUser.empty
           : userCredentials.user!.toUser;
@@ -494,6 +478,44 @@ class AuthenticationRepository {
       throw const LogInWithGoogleFailure();
     }
   }
+
+  /// Starts the Sign In with Apple Flow.
+  ///
+  /// Throws a [LogInWithGoogleFailure] if an exception occurs.
+  // Future<AuthUser?> logInWithApple() async {
+  //   try {
+  //     final rawNonce = generateNonce();
+  //     final nonce = sha256ofString(rawNonce);
+
+  //     // Request credential for the currently signed in Apple account.
+  //     final appleCredential = await SignInWithApple.getAppleIDCredential(
+  //       scopes: [
+  //         AppleIDAuthorizationScopes.email,
+  //         AppleIDAuthorizationScopes.fullName,
+  //       ],
+  //       nonce: nonce,
+  //     );
+
+  //     // Create an `OAuthCredential` from the credential returned by Apple.
+  //     final oauthCredential = OAuthProvider('apple.com').credential(
+  //       idToken: appleCredential.identityToken,
+  //       rawNonce: rawNonce,
+  //     );
+
+  //     // Sign in the user with Firebase. If the nonce we generated earlier does
+  //     // not match the nonce in `appleCredential.identityToken`, sign in will
+  //     // fail.
+  //     final userCredentials =
+  //         await _firebaseAuth.signInWithCredential(oauthCredential);
+  //     return userCredentials.user == null
+  //         ? AuthUser.empty
+  //         : userCredentials.user!.toUser;
+  //   } on FirebaseAuthException catch (e) {
+  //     throw LogInWithGoogleFailure.fromCode(e.code);
+  //   } catch (_) {
+  //     throw const LogInWithGoogleFailure();
+  //   }
+  // }
 
   /// Starts the Sign In with Apple Flow.
   ///
@@ -524,8 +546,9 @@ class AuthenticationRepository {
 
       if (loginResult.status == LoginStatus.success) {
         // Create a credential from the access token
-        final OAuthCredential credential = FacebookAuthProvider.credential(
-            loginResult.accessToken!.tokenString);
+        final credential = FacebookAuthProvider.credential(
+          loginResult.accessToken!.tokenString,
+        );
         // Once signed in, return the UserCredential
         final userCredentials =
             await FirebaseAuth.instance.signInWithCredential(credential);
