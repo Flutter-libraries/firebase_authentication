@@ -1,3 +1,6 @@
+## 0.0.31
+- Update dependencies
+
 ## 0.0.30
 - Update dependencies
 - Social login updates
