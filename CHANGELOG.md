@@ -1,3 +1,12 @@
+## 0.0.32
+- Migrate to `google_sign_in` v7:
+  - Update `AuthenticationRepository` to use `GoogleSignIn.instance`.
+  - Replace `signIn` with `authenticate`.
+  - Fix `accessToken` access in `_linkWithGoogle`.
+- Optimize `getIdToken` usage (remove forced refresh).
+- Remove unused dependencies (`firebase_core`, `mocktail`, `flutter_lints`).
+- Fix consistent usage of `isWeb` property.
+
 ## 0.0.31
 - Update dependencies
 

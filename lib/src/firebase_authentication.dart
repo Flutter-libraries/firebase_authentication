@@ -217,7 +217,7 @@ class AuthenticationRepository {
     FacebookAuth? facebookAuth,
   })  : _cache = cache ?? CacheClient(),
         _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn.standard(),
+        _googleSignIn = googleSignIn ?? GoogleSignIn.instance,
         _facebookAuth = facebookAuth ?? FacebookAuth.instance;
 
   final CacheClient _cache;
@@ -246,7 +246,7 @@ class AuthenticationRepository {
   /// Emits [AuthUser.empty] if the user is not authenticated.
   Stream<AuthUser> get user {
     return _firebaseAuth.authStateChanges().asyncMap((firebaseUser) async {
-      final authToken = await firebaseUser?.getIdToken(true);
+      final authToken = await firebaseUser?.getIdToken();
       final user = firebaseUser == null
           ? AuthUser.empty
           : firebaseUser.toUser.copyWith(authToken: authToken);
@@ -262,7 +262,7 @@ class AuthenticationRepository {
   /// Emits [AuthUser.empty] if the user is not authenticated.
   Stream<AuthUser> get userChanges async* {
     _firebaseAuth.userChanges().asyncMap((firebaseUser) async* {
-      final authToken = await firebaseUser?.getIdToken(true);
+      final authToken = await firebaseUser?.getIdToken();
       final user = firebaseUser == null
           ? AuthUser.empty
           : firebaseUser.toUser.copyWith(authToken: authToken);
@@ -278,7 +278,7 @@ class AuthenticationRepository {
   /// Emits [AuthUser.empty] if the user is not authenticated.
   Stream<AuthUser> get tokenRefresh {
     return _firebaseAuth.idTokenChanges().asyncMap((firebaseUser) async {
-      final authToken = await firebaseUser?.getIdToken(true);
+      final authToken = await firebaseUser?.getIdToken();
       final user = firebaseUser == null
           ? AuthUser.empty
           : firebaseUser.toUser.copyWith(authToken: authToken);
@@ -346,7 +346,7 @@ class AuthenticationRepository {
   /// Link provider to user
   Future<void> linkWithProvider(SocialProvider provider) async {
     try {
-      if (kIsWeb) {
+      if (isWeb) {
         await _linkWithPopup(provider);
       } else if (provider == SocialProvider.google) {
         await _linkWithGoogle();
@@ -365,10 +365,10 @@ class AuthenticationRepository {
   /// Link provider to user
   Future<void> _linkWithGoogle() async {
     try {
-      final googleUser = await _googleSignIn.signIn();
-      final googleAuth = await googleUser!.authentication;
+      final googleUser = await _googleSignIn.authenticate();
+      final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
+        accessToken: null, // GoogleSignIn v7 doesn't return accessToken in authentication
         idToken: googleAuth.idToken,
       );
 
@@ -430,20 +430,21 @@ class AuthenticationRepository {
               : userCredentials.user!.toUser;
         }
       } else {
-        final googleUser = await _googleSignIn.signIn();
-
-        if (googleUser == null) return null;
-
-        final googleAuth = await googleUser.authentication;
-        credential = GoogleAuthProvider.credential(
-          accessToken: googleAuth.accessToken,
-          idToken: googleAuth.idToken,
-        );
-        final userCredentials =
-            await _firebaseAuth.signInWithCredential(credential);
-        return userCredentials.user == null
-            ? AuthUser.empty
-            : userCredentials.user!.toUser;
+        try {
+          final googleUser = await _googleSignIn.authenticate();
+          final googleAuth = await googleUser.authentication;
+          credential = GoogleAuthProvider.credential(
+            accessToken: null, // GoogleSignIn v7 doesn't return accessToken in authentication
+            idToken: googleAuth.idToken,
+          );
+          final userCredentials =
+              await _firebaseAuth.signInWithCredential(credential);
+          return userCredentials.user == null
+              ? AuthUser.empty
+              : userCredentials.user!.toUser;
+        } catch (_) {
+          return null;
+        }
       }
 
       return null;
@@ -777,7 +778,7 @@ class AuthenticationRepository {
     try {
       await Future.wait([
         if (_firebaseAuth.currentUser != null) _firebaseAuth.signOut(),
-        if (_googleSignIn.currentUser != null) _googleSignIn.signOut(),
+        _googleSignIn.signOut(),
       ]);
     } catch (_) {
       throw LogOutFailure();
