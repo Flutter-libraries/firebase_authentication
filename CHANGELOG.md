@@ -1,3 +1,13 @@
+## 0.0.33
+- Update dependencies
+- Update README.md
+- Update CHANGELOG.md
+- Update pubspec.yaml
+- Update example/lib/main.dart
+- Update example/pubspec.yaml
+- Update example/README.md
+- Update example/CHANGELOG.md
+- Update example/pubspec.yaml
 ## 0.0.32
 - Migrate to `google_sign_in` v7:
   - Update `AuthenticationRepository` to use `GoogleSignIn.instance`.
